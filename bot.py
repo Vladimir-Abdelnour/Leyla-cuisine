@@ -14,6 +14,7 @@ from datetime import datetime
 
 load_dotenv()
 # Your Telegram Bot Token.
+TELEGRAM_USERNAME="@leyla_cuisine_bot"
 API_KEY = os.environ.get("TELEGRAM_TOKEN")
 bot = telebot.TeleBot(API_KEY)
 
