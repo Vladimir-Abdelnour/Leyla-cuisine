@@ -18,7 +18,6 @@ TELEGRAM_USERNAME="@leyla_cuisine_bot"
 API_KEY = "7700372233:AAFVDBqM-t6PCVR3kXNiywyZR6V-WY5b640"
 bot = telebot.TeleBot(API_KEY)
  
-openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 @bot.message_handler(commands=['Greet'])
