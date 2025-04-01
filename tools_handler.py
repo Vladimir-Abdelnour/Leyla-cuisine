@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from enum import Enum
 
 
-MENU_CSV_PATH = "menu.csv"
+MENU_CSV_PATH = "data/menu.csv"  # updated path for menu CSV
 
 
 # Extended Order models (added email and tax_rate)
@@ -141,9 +141,8 @@ def generate_pdf_quote(quotation: Dict[str, Any], output_path: str = "quotation.
     pdf.set_font("Arial", "", 12)
     current_date = datetime.now().strftime("%Y-%m-%d")
     pdf.cell(0, 10, f"Date: {current_date}", ln=True, align="R")
-    pdf.cell(0, 10, "ABC Restaurant", ln=True, align="C")
-    pdf.cell(0, 10, "123 Main St, City, Country", ln=True, align="C")
-    pdf.cell(0, 10, "Phone: (123) 456-7890 | Email: info@abcrestaurant.com", ln=True, align="C")
+    pdf.cell(0, 10, "Leyla Cuisine", ln=True, align="C")
+    pdf.cell(0, 10, "Phone: (480)258-7862 | Email: leylallc.arizona@gmail.com", ln=True, align="C")
     pdf.ln(5)
 
     grouped = {}
@@ -201,7 +200,7 @@ def save_sales(quotation: Dict[str, Any]):
     Save the sales for the current month to sales.csv.
     For each item, record: Date, Month, Item, Quantity, Total Sales.
     """
-    filename = 'sales.csv'
+    filename = 'data/sales.csv'  # updated path for sales CSV
     fieldnames = ['Date', 'Month', 'Item', 'Quantity', 'Total Sales']
     now = datetime.now()
     current_date = now.strftime("%Y-%m-%d")
@@ -312,3 +311,29 @@ async def delete_menu_item(wrapper: RunContextWrapper[Menu_item], menu_item: Men
     except Exception as e:
         return f"Error deleting menu item: {str(e)}"
 
+@function_tool
+async def list_menu_items(wrapper: RunContextWrapper[Menu_item]) -> str:
+    """Lists all menu items from the menu CSV file using Menu_item format."""
+    fieldnames = ['Item', 'Price', 'Category', 'Description']
+    try:
+        if not os.path.exists(MENU_CSV_PATH):
+            return "No menu items found: the menu file does not exist."
+        rows = []
+        with open(MENU_CSV_PATH, 'r', newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=fieldnames)
+            # Skip header row if it exists
+            header = next(reader, None)
+            if header and header['Item'] != 'Item':
+                # If header is not present, add the first row as data
+                rows.append(header)
+            for row in reader:
+                rows.append(row)
+        if not rows:
+            return "No menu items found in the file."
+        # Build a formatted string of menu items
+        result = "Menu Items:\n"
+        for row in rows:
+            result += f"{row['Item']} - Price: {row['Price']}, Category: {row['Category']}, Description: {row['Description']}\n"
+        return result
+    except Exception as e:
+        return f"Error listing menu items: {str(e)}"

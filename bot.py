@@ -6,7 +6,7 @@ import os
 from tools_handler import calculate_quotation, generate_pdf_quote, save_sales, save_approved_quotation, Menu_item, Order
 import tools_handler as tl
 from agents import Agent, Runner, handoff, function_tool, RunContextWrapper
-import dotenv import load_dotenv
+from dotenv import load_dotenv
 
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional, Union
@@ -33,7 +33,7 @@ def update_contacts(name: str, email: str, phone_number: str = "", address: str 
     Append a new contact to contacts.csv if the email is not already present.
     Expected CSV columns: name, email, phone number, address.
     """
-    filename = 'contacts.csv'
+    filename = 'data/contacts.csv'
     fieldnames = ['name', 'email', 'phone number', 'address']
     try:
         contacts = []
@@ -57,7 +57,7 @@ def update_contacts(name: str, email: str, phone_number: str = "", address: str 
 def confirmation_handler(message, pdf_path, recipient_email):
     text = message.text.strip().lower()
     if text.startswith("y"):
-        from email_handler import send_quotation_email
+        from google_handlers.email_handler import send_quotation_email  # updated import path
         send_status = send_quotation_email(pdf_path, recipient_email=recipient_email)
         if send_status:
             bot.send_message(message.chat.id, "Quotation sent via email successfully!")
@@ -95,14 +95,15 @@ menu_agent: Agent[Menu_item] = Agent[Menu_item](
     name="Menu agent",
     model='gpt-4o',
     instructions=(
-        'You are a menu management agent that can add, edit, or delete menu items. '
+        'You are a menu management agent that can add, edit, list, or delete menu items. '
         'When handling a menu operation, use the Menu_item structure for input. '
         'Output a message describing the operation performed. '
         f'Here is the current menu: {menu_items_str}.'
     ),
-    tools=[tl.add_menu_item, tl.edit_menu_item, tl.delete_menu_item],
+    tools=[tl.add_menu_item, tl.edit_menu_item, tl.delete_menu_item, tl.list_menu_items],
     output_type=Union[Menu_item, str],
 )
+
 
 # Handoff functions to update the current agent.
 def on_handoff_menu(ctx: RunContextWrapper):
@@ -126,8 +127,9 @@ triage_agent = Agent(
     instructions=(
         'You are a triage agent that decides whether the user input is an order or a menu operation. Menu operations include keywords "menu", "add", "edit", or "delete"'
         ' For example, if the user input has an email in it or says "I want to order 6 hummus and 3 mansaf to vladimirabdelnour@gmail.com" then it is an order and should be handed to parser_agent. '
-        'If the input is an order, output "handing off to parser" and return an Order JSON object using order_parser instructions. '
-        'If the input is a menu operation hand off to the menu_agent and return its message.'
+        'If the input is an order, return a JSON object matching the following structure: '
+        '{"email": "customer@example.com", "items": [{"name": "Margherita Pizza", "quantity": 1}], "discount": "10%" or 10, "delivery": true, "tax_rate": 8.1} '
+        'If the input is a menu operation hand off to the menu_agent'
     ),
     handoffs=[
         handoff(
