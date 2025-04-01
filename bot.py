@@ -6,14 +6,19 @@ import os
 from tools_handler import calculate_quotation, generate_pdf_quote, save_sales, save_approved_quotation, Menu_item, Order
 import tools_handler as tl
 from agents import Agent, Runner, handoff, function_tool, RunContextWrapper
+import dotenv import load_dotenv
 
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional, Union
 from datetime import datetime
 
+load_dotenv()
 # Your Telegram Bot Token.
-API_KEY = "7700372233:AAFVDBqM-t6PCVR3kXNiywyZR6V-WY5b640"
+API_KEY = os.environ.get("TELEGRAM_TOKEN")
 bot = telebot.TeleBot(API_KEY)
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
 
 @bot.message_handler(commands=['Greet'])
 def greet(message):
