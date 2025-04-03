@@ -33,7 +33,7 @@ def get_gmail_service():
     return service
 
 def send_quotation_email(pdf_path, 
-                         sender_email="vladimirabdelnour00@gmail.com", 
+                         sender_email="leylallc.arizona@gmail.com", 
                          recipient_email="vladimirabdelnoor@gmail.com",
                          subject="Quotation PDF",
                          body=None):
