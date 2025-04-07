@@ -15,7 +15,7 @@ from datetime import datetime
 load_dotenv()
 # Your Telegram Bot Token.
 TELEGRAM_USERNAME="@Leyla_Cuisine_bot"
-API_KEY = "7700372233:AAFVDBqM-t6PCVR3kXNiywyZR6V-WY5b640"
+API_KEY = "7745442387:AAGuArF4G_2AUNvWBk0qV8FVsd33LjkZbS4"
 bot = telebot.TeleBot(API_KEY)
  
 from dotenv import load_dotenv
