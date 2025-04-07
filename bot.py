@@ -14,10 +14,15 @@ from datetime import datetime
 
 load_dotenv()
 # Your Telegram Bot Token.
-TELEGRAM_USERNAME="@leyla_cuisine_bot"
-API_KEY = "7745442387:AAGuArF4G_2AUNvWBk0qV8FVsd33LjkZbS4"
+TELEGRAM_USERNAME="@Leyla_Cuisine_bot"
+API_KEY = "7700372233:AAFVDBqM-t6PCVR3kXNiywyZR6V-WY5b640"
 bot = telebot.TeleBot(API_KEY)
  
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # take environment variables from .env.
+api_key = os.getenv("OPENAI_API_KEY")
 
 
 @bot.message_handler(commands=['Greet'])
