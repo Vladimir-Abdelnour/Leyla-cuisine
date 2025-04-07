@@ -66,8 +66,8 @@ def send_quotation_email(pdf_path,
             "to serve your needs and hope our proposal meets your expectations.\n\n"
             "Should you have any questions or require further clarification, please do not hesitate to contact me.\n\n"
             "Thank you for your business.\n\n"
-            "Best regards,\n"
-            "Khaykon el gergy\n"
+            "All the love,\n"
+            "Leyla Cuisine\n"
             
         )
     
